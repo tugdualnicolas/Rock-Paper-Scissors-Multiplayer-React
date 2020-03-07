@@ -10,13 +10,13 @@ require('./Config/passport')(passport)
 
 
 app.disable('x-powered-by')
-app.use(cors({
-    origin: function(origin, callback){
-      return callback(null, true);
-    },
-    optionsSuccessStatus: 200,
-    credentials: true
-  }));
+// app.use(cors({
+//     origin: function(origin, callback){
+//       return callback(null, true);
+//     },
+//     optionsSuccessStatus: 200,
+//     credentials: true
+//   }));
 app.use(express.json())   //eslint-disable-next-line
 require('dotenv').config()    
 const PORT=process.env.PORT||3000
