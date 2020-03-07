@@ -73,7 +73,7 @@ module.exports = io => {
         }
         else{
           socket.emit("playerdisconnected",{
-            message:'player disconnected,you win'
+            message:'player disconnected'
           })
          
         }
@@ -86,7 +86,7 @@ module.exports = io => {
         }
         else{
           Sockets[check[1]].emit("playerdisconnected",{
-            message:'playerdisconnected,you win'
+            message:'playerdisconnected'
           })
         }
       }
@@ -108,7 +108,7 @@ module.exports = io => {
         Sockets[data.username]["lookingforPlayers"]=false
         Sockets[data.username]["playingStatus"]=false
         Sockets[data.username].emit("playerdisconnected",{
-          message:'YOU LOSE THE SERIES'
+          message:'disconnected'
         })
       }
       else{
@@ -118,7 +118,7 @@ module.exports = io => {
         Sockets[data.connectedplayername]["lookingforPlayers"]=false
         Sockets[data.connectedplayername]["playingStatus"]=false
         Sockets[data.connectedplayername].emit("playerdisconnected",{
-          message:'OPPONENT DISCONNECTED,YOU WIN THE SERIES'
+          message:'opponent disconnected'
         })
       }
       else{

@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 //import {BrowserRouter} from "react-router-dom"
+//import userContext from "../Contexts/UserContext"
 import ioconnect from "socket.io-client"
 import Scoreboard from "./ScoreBoard";
 import Result from "./Result";
@@ -9,9 +10,14 @@ import rock from "../images/rock.png";
 import scissor from "../images/scissors.png";
 import paper from "../images/paper.png";
 import Connectbtn from "../Components/Connectbtn"
+import {Redirect} from "react-router-dom"
+
 class MApp extends Component {
+  
+ 
   state = {
-    socket:ioconnect("http://localhost:1234"),
+    
+    socket:ioconnect("http://localhost:3000"),
     images: [
       { id: "rock", image: rock, clicked: false },
       { id: "paper", image: paper, clicked: false },
@@ -26,10 +32,12 @@ class MApp extends Component {
  
     resultmsg: "please connect to player to start playing",
     playcounter:0,
-    username:"rahul",
+    username:this.props.loggedinUser,
     opponentname:"",
     opponentmove:"",
-    usermove:""
+    usermove:"",
+    noofplays:0,
+    playswon:0
   };
   setupBeforeUnloadListener = () => {
     window.addEventListener("beforeunload", (ev) => {
@@ -40,14 +48,17 @@ class MApp extends Component {
         })
     });
 };
+   setusername=()=>{
+  //console.log(this.state.username)
+   }
+  
   componentDidMount(){
+    
     console.log("multiplayer mounted")
     this.setupBeforeUnloadListener();
-    if(!this.state.username){
-      alert("please login to play multiplayer");
-      this.props.history.push('/login')
-   }
-   else{
+     
+   if(this.state.username){
+    //console.log("mount username state:",this.state.username)
       this.state.socket.emit("addUserToSocketObject",{
         username:this.state.username
       })
@@ -72,9 +83,11 @@ class MApp extends Component {
    this.state.socket.on("playerdisconnected",(data)=>{
    //  console.log(data.message)
      this.setState({
-       resultmsg:data.message,
+       resultmsg:`${data.message},you won ${this.state.playswon} out of ${this.state.noofplays} series`,
        btnmsg:'CONNECT',
-       opponentname:""
+       opponentname:"",
+       playswon:0,
+       noofplays:0
      })
    })
    this.state.socket.on("opponentmove",(data)=>{
@@ -184,26 +197,28 @@ class MApp extends Component {
       { id: computerchoice, image: this.getimage(computerchoice) }
     ];
     this.setState({
+      images,
+      resultimages,
       scores
+    },()=>{
+      if(this.state.scores[0].userscore>=2){
+        const resultmsg = "YOU WIN THE SERIES";
+      this.setState({
+        playswon:this.state.playswon+1,
+        scores: [{ userscore: 0 }, { compscore: 0 }],
+        resultmsg,
+        noofplays:this.state.noofplays+1
+      });
+      }
+      else{
+        const resultmsg = "YOU WIN";
+      this.setState({
+        resultmsg
+        
+      });
+      }
     })
-    if(this.state.scores[0].userscore>=2){
-      const resultmsg = "YOU WIN THE SERIES";
-    this.setState({
-      images,
-      resultimages,
-      scores: [{ userscore: 0 }, { compscore: 0 }],
-      resultmsg
-    });
-    }
-    else{
-      const resultmsg = "YOU WIN";
-    this.setState({
-      images,
-      resultimages,
-      scores,
-      resultmsg
-    });
-    }
+
     
     setTimeout(() => {
       const images = this.state.images.map(image => {
@@ -216,7 +231,7 @@ class MApp extends Component {
       });
       //console.log(images)
     }, 400);
-    console.log("you win");
+   // console.log("you win");
   };
   lose = (userchoice, computerchoice) => {
     const images = this.state.images.map(image => {
@@ -237,29 +252,29 @@ class MApp extends Component {
       { id: computerchoice, image: this.getimage(computerchoice) }
     ];
     this.setState({
-      scores
-    })
-    console.log(this.state.scores)
-
-    if(this.state.scores[1].compscore>=2){
-      const resultmsg = "YOU LOSE THE SERIES";
-    this.setState({
-      images,
-      resultimages,
-      scores: [{ userscore: 0 }, { compscore: 0 }],
-      resultmsg
-    });
-    }
-    else{
-      console.log(this.state.scores[1].compscore)
-      const resultmsg = "YOU LOSE";
-    this.setState({
-      images,
-      resultimages,
       scores,
-      resultmsg
-    });
-    }
+      images,
+      resultimages,
+    },()=>{
+      if(this.state.scores[1].compscore>=2){
+        const resultmsg = "YOU LOSE THE SERIES";
+      this.setState({
+        noofplays:this.state.noofplays+1,
+        scores: [{ userscore: 0 }, { compscore: 0 }],
+        resultmsg
+      });
+      }
+      else{
+        //console.log(this.state.scores[1].compscore)
+        const resultmsg = "YOU LOSE";
+      this.setState({
+        resultmsg
+      });
+      }
+    })
+  
+
+
     setTimeout(() => {
       const images = this.state.images.map(image => {
         if (image.clicked) {
@@ -270,7 +285,7 @@ class MApp extends Component {
         images
       });
     }, 400);
-    console.log("you lose");
+   // console.log("you lose");
   };
   draw = (userchoice, computerchoice) => {
     //console.log(e.classList)
@@ -300,7 +315,7 @@ class MApp extends Component {
         images
       });
     }, 400);
-    console.log("draw");
+  //  console.log("draw");
   };
   sendMoveAndGame = userchoice => {
     
@@ -377,6 +392,14 @@ class MApp extends Component {
     }
   }
   render(){
+    this.setusername()
+    if(!this.state.username){
+     // console.log("mount username state:",this.state.username)
+  
+      alert("please login to play multiplayer");
+        return <Redirect to='/login' /> 
+     }
+     else{
     return (
       
       <div className="Multiplayer">
@@ -392,6 +415,7 @@ class MApp extends Component {
         </div>):(<div className="connectmsg"><p>{this.state.resultmsg}</p><Connectbtn sendConnectreq={this.sendConnectreq} sendDisConnectreq={this.sendDisConnectreq} btnmsg={this.state.btnmsg} /></div>)}
       </div>
     );
+       }
   }
 }
 

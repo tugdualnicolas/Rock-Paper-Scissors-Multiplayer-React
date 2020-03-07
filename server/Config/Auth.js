@@ -10,11 +10,12 @@ module.exports={
     ensurelog:function(req,res,next){
         //console.log("reached ensurelog")
        // console.log(req)
-       console.log(req.user)
+      // console.log(req.user)
        console.log(req.isAuthenticated())
        if(req.isAuthenticated()){
-         
+         console.log("already logged in")
           res.json({
+              user:req.user,
               status:200
           }).end();
        }

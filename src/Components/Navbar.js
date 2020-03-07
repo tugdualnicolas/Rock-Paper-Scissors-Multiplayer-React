@@ -14,8 +14,8 @@ class Navbar extends Component {
   //   })
   // }
   render() {
-    const {logstate}=this.context
-    console.log(logstate)
+   // const {logstate}=this.context
+    //console.log(logstate)
 
     // if(user){
     //   this.setState({
@@ -69,8 +69,8 @@ class Navbar extends Component {
             <li className="nav-item">
               <div className="nav-link">
                 {/* <Link to="/login">{this.state.loginState}</Link> */}
-                <Link to={logstate === "login" ? "/login" : "/logout"}>
-                  {logstate === "login" ? "login" : "logout"}
+                <Link to={this.props.logstate === "login" ? "/login" : "/logout"}>
+                  {this.props.logstate === "login" ? "login" : "logout"}
                 </Link>
               </div>
             </li>

@@ -12,6 +12,8 @@ class UserContextProvider extends React.Component {
             this.setState({
                 user:user,
                 logstate:'logout'
+             },()=>{
+                 console.log("updated user")
              })
          }
          else if(!user){
@@ -24,7 +26,7 @@ class UserContextProvider extends React.Component {
      }
     render() { 
         return ( 
-            <userContext.Provider value={{...this.state,updateuser:this.updateuser}}>
+            <userContext.Provider value={{userdata:this.state,updateuser:this.updateuser}}>
                 {this.props.children}
             </userContext.Provider>
          );

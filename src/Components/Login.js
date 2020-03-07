@@ -1,15 +1,15 @@
 import React, { Component} from "react";
 import Errormsg from "./Errormsg";
 import Multiplayer from "./Multiplayer";
-import { userContext } from "../Contexts/UserContext";
-
+//import { userContext } from "../Contexts/UserContext";
+//import { Redirect } from 'react-router-dom'
 class Login extends Component {
   state = {
     username: "",
     password: "",
     errormsg: ""
   };
-  static contextType = userContext;
+
   componentDidMount() {
     // fetch("http://localhost:3000/users/login", {
     //   method: "POST",
@@ -37,7 +37,7 @@ class Login extends Component {
   }
   login = e => {
     e.preventDefault();
-    const { updateuser } = this.context;
+   // const { updateuser } = this.context;
 
     fetch("http://localhost:3000/users/login", {
       method: "POST",
@@ -59,8 +59,10 @@ class Login extends Component {
               errormsg: json.info.message
             });
           } else if (json.user) {
-            updateuser(json.user);
-            this.props.history.push("/multiplayer");
+           this.props.setloggedinUser(json.user)
+           this.props.setlogstate('logout')
+           // return <Redirect to='/multiplayer' /> 
+           this.props.history.push('/multiplayer')
           }
         }
       });
