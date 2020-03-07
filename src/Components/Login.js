@@ -39,7 +39,7 @@ class Login extends Component {
     e.preventDefault();
    // const { updateuser } = this.context;
 
-    fetch("http://localhost:3000/users/login", {
+    fetch("/users/login", {
       method: "POST",
       credentials: "include",
       headers: {

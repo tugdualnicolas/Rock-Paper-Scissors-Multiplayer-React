@@ -17,7 +17,7 @@ class MApp extends Component {
  
   state = {
     
-    socket:ioconnect("http://localhost:3000"),
+    socket:ioconnect("/"),
     images: [
       { id: "rock", image: rock, clicked: false },
       { id: "paper", image: paper, clicked: false },

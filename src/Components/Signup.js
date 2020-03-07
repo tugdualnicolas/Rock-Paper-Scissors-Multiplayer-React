@@ -56,7 +56,7 @@ class Signup extends Component {
     e.preventDefault();
     console.log(this.state);
     if (this.validateForm(this.state.errors)) {
-      fetch("http://localhost:3000/users/signup", {
+      fetch("/users/signup", {
         method: "POST",
         headers: {
           Accept: "application/json",

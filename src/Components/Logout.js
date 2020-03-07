@@ -5,7 +5,7 @@ class Logout extends React.Component {
 
     componentDidMount(){
        
-        fetch("http://localhost:3000/users/logout", {
+        fetch("/users/logout", {
             
             credentials: 'include',
             headers: {

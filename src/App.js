@@ -13,7 +13,7 @@ function App() {
   const [logstate,setlogstate]=useState('login')
    useEffect(()=>{
      console.log("app mounted");
-     fetch("http://localhost:3000/users/login", {
+     fetch("/users/login", {
       method: "POST",
       credentials: "include",
       headers: {
